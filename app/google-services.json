@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "704776269686",
+    "project_id": "qrattendanceapp-d0872",
+    "storage_bucket": "qrattendanceapp-d0872.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:704776269686:android:6cf5a7730e94211c9d1457",
+        "android_client_info": {
+          "package_name": "io.akash.qrattendancesystem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw6Hj1r0SkyBUG9zkcsslHqYVRKS_TKHg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
