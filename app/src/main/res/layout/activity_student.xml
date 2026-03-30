@@ -60,6 +60,15 @@
             android:layout_height="@dimen/_40sdp"
             android:layout_marginHorizontal="@dimen/_16sdp"/>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/black"
+            android:layout_marginTop="20dp"/>
+
         <TextView
             android:text="Point your camera at the QR Code"
             android:textSize="@dimen/_16ssp"
