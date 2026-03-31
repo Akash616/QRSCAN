@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.zxing.integration.android.IntentIntegrator
 import io.akash.qrattendancesystem.databinding.ActivityStudentBinding
@@ -14,6 +15,13 @@ class StudentActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityStudentBinding
     private val db = FirebaseFirestore.getInstance()
+
+    override fun onStart() {
+        super.onStart()
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) finish()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +32,12 @@ class StudentActivity : AppCompatActivity() {
         binding.btnScan.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
             startQRScanner()
+        }
+
+        binding.btnLogout.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 
@@ -60,11 +74,19 @@ class StudentActivity : AppCompatActivity() {
 
         binding.progressBar.visibility = View.VISIBLE
 
+        val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+
         val attendance = hashMapOf(
-            "studentName" to "Akash",
+            "studentId" to user?.uid,
             "sessionId" to sessionId,
             "time" to System.currentTimeMillis()
         )
+
+        /*val attendance = hashMapOf(
+            "studentName" to "Akash",
+            "sessionId" to sessionId,
+            "time" to System.currentTimeMillis()
+        )*/
 
         db.collection("attendance")
             .add(attendance)

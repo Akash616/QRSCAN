@@ -1,10 +1,12 @@
 package io.akash.qrattendancesystem
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
@@ -15,6 +17,13 @@ class TeacherActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTeacherBinding
     private val db = FirebaseFirestore.getInstance()
 
+    override fun onStart() {
+        super.onStart()
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -23,12 +32,21 @@ class TeacherActivity : AppCompatActivity() {
 
         binding.btnGenerate.setOnClickListener {
 
-            val sessionId = "session_" + System.currentTimeMillis()
+            //val sessionId = "session_" + System.currentTimeMillis()
+            val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+
+            val sessionId = "session_${System.currentTimeMillis()}_${user?.uid}"
 
             val qrBitmap = generateQR(sessionId)
 
             binding.qrImage.setImageBitmap(qrBitmap)
 
+        }
+
+        binding.btnLogout.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 

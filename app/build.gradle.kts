@@ -60,5 +60,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:26.1.2")
 
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.firebase:firebase-auth-ktx:23.2.1")
 
 }

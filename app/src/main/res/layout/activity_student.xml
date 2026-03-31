@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_height="@dimen/_45sdp"
         android:orientation="horizontal"
         android:background="#1E3A8A"
         android:gravity="center_vertical">
@@ -23,8 +23,16 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/btnLogout"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:src="@drawable/ic_logout"
+            android:layout_marginEnd="@dimen/_12sdp"/>
 
     </LinearLayout>
 
