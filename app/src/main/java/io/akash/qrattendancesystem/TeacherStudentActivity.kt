@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import io.akash.qrattendancesystem.databinding.ActivityTeacherStudentBinding
@@ -13,6 +15,8 @@ class TeacherStudentActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTeacherStudentBinding
     private lateinit var auth: FirebaseAuth
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private var role: String = ""
 
@@ -49,6 +53,7 @@ class TeacherStudentActivity : AppCompatActivity() {
 
             loginUser(email, password)
         }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     private fun loginUser(email: String, password: String) {
