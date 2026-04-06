@@ -51,6 +51,14 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/_8sdp"/>
 
+        <Spinner
+            android:id="@+id/spinnerClass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:background="@drawable/spinner_background"
+            android:layout_margin="16dp"/>
+
         <Button
             android:id="@+id/btnGenerate"
             android:text="Generate QR Code"

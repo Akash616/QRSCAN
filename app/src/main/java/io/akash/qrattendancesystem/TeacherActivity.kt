@@ -1,10 +1,13 @@
 package io.akash.qrattendancesystem
 
+import android.R
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,6 +23,9 @@ class TeacherActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTeacherBinding
     private val db = FirebaseFirestore.getInstance()
+
+    private val classList = ArrayList<String>()
+    private val classIdList = ArrayList<String>()
 
     override fun onStart() {
         super.onStart()
@@ -45,10 +51,15 @@ class TeacherActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView)
             ?.isAppearanceLightStatusBars = false
 
+        loadClasses()
+
         binding.btnGenerate.setOnClickListener {
 
-            //val sessionId = "session_" + System.currentTimeMillis()
-            val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+            // 👇 NEW: selected class (abhi use nahi kar rahe, next step me use hoga)
+            val position = binding.spinnerClass.selectedItemPosition
+            val selectedClassId = if (classIdList.isNotEmpty()) classIdList[position] else ""
+
+            val user = FirebaseAuth.getInstance().currentUser
 
             val sessionId = "session_${System.currentTimeMillis()}_${user?.uid}"
 
@@ -63,6 +74,37 @@ class TeacherActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+    }
+
+    private fun loadClasses() {
+
+        db.collection("classes")
+            .get()
+            .addOnSuccessListener { result ->
+
+                classList.clear()
+                classIdList.clear()
+
+                for (doc in result) {
+                    val className = doc.getString("className") ?: ""
+
+                    classList.add(className)
+                    classIdList.add(doc.id)
+                }
+
+                val adapter = ArrayAdapter(
+                    this,
+                    R.layout.simple_spinner_item,
+                    classList
+                )
+
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                binding.spinnerClass.adapter = adapter
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to load classes ❌", Toast.LENGTH_SHORT).show()
+            }
     }
 
     fun generateQR(text: String): Bitmap {
