@@ -50,11 +50,11 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Insets handling (optional now)
-        /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(0, systemBars.top, 0, systemBars.bottom)
             insets
-        }*/
+        }
 
 
         // Teacher button click
