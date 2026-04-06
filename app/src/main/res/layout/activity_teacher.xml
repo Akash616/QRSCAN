@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#F5F7FA">
+    android:background="@color/bg_color">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,10 +13,11 @@
         android:background="#1E3A8A"
         android:gravity="center_vertical">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_back"
+            android:text="👨‍🏫"
+            android:textSize="@dimen/_18ssp"
             android:layout_marginHorizontal="@dimen/_12sdp"/>
 
         <TextView
@@ -29,64 +31,73 @@
 
         <ImageView
             android:id="@+id/btnLogout"
-            android:layout_width="@dimen/_25sdp"
-            android:layout_height="@dimen/_25sdp"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
             android:src="@drawable/ic_logout"
             android:layout_marginEnd="@dimen/_12sdp"/>
 
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:text="Generate QR Code for Attendance"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#1E3A8A"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_8sdp"/>
-
-        <Spinner
-            android:id="@+id/spinnerClass"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            android:background="@drawable/spinner_background"
-            android:layout_margin="16dp"/>
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/_50sdp">
 
-        <Button
-            android:id="@+id/btnGenerate"
-            android:text="Generate QR Code"
-            android:backgroundTint="#2563EB"
-            android:textColor="#fff"
-            android:textSize="@dimen/_14ssp"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_marginHorizontal="@dimen/_16sdp"/>
+            <TextView
+                android:text="Generate QR Code for Attendance"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#1E3A8A"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_8sdp"/>
 
-        <ImageView
-            android:id="@+id/qrImage"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="24dp"
-            android:background="#fff"/>
+            <Spinner
+                android:id="@+id/spinnerClass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:background="@drawable/spinner_background"
+                android:layout_margin="16dp"/>
 
-        <TextView
-            android:text="Scan this QR Code"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#1E3A8A"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/_8sdp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGenerate"
+                android:text="Generate QR Code"
+                android:backgroundTint="#2563EB"
+                android:textColor="#fff"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/_12sdp"
+                android:textSize="@dimen/_14ssp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_16sdp"/>
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/qrImage"
+                android:layout_width="@dimen/_250sdp"
+                android:layout_height="@dimen/_250sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="24dp"
+                android:background="#fff"/>
+
+            <TextView
+                android:text="Scan this QR Code"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#1E3A8A"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_8sdp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

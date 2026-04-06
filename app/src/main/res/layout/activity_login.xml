@@ -2,43 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="@dimen/_20sdp"
-    android:background="#EAF2FF">
+    android:background="@color/bg_color">
 
-    <ImageView
-        android:layout_width="@dimen/_100sdp"
-        android:layout_height="@dimen/_100sdp"
-        android:src="@drawable/ic_qr"
-        android:layout_marginBottom="@dimen/_16sdp"/>
-
-    <TextView
-        android:text="QR Attendance App"
-        android:textSize="@dimen/_22ssp"
-        android:textStyle="bold"
-        android:textColor="#1E3A8A"
-        android:layout_marginBottom="@dimen/_24sdp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btnTeacher"
-        android:text="👨‍🏫 Teacher"
-        android:textSize="@dimen/_14ssp"
-        android:backgroundTint="#FF6B00"
-        android:textColor="#fff"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginBottom="@dimen/_16sdp"/>
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <Button
-        android:id="@+id/btnStudent"
-        android:text="👨‍🎓 Student"
-        android:textSize="@dimen/_14ssp"
-        android:backgroundTint="#1DB954"
-        android:textColor="#fff"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:padding="@dimen/_20sdp">
+
+            <ImageView
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_150sdp"
+                android:src="@drawable/st_teach_qr"
+                android:layout_marginBottom="@dimen/_20sdp"/>
+
+            <TextView
+                android:text="QR Attendance App"
+                android:textSize="@dimen/_22ssp"
+                android:textStyle="bold"
+                android:textColor="#1E3A8A"
+                android:layout_marginBottom="@dimen/_24sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTeacher"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_42sdp"
+                android:text="👨‍🏫 Teacher"
+                android:textSize="@dimen/_14ssp"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/_12sdp"
+                android:backgroundTint="@color/blue"
+                android:textColor="@color/white"
+                android:layout_marginBottom="@dimen/_16sdp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnStudent"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_42sdp"
+                android:text="👨‍🎓 Student"
+                android:textSize="@dimen/_14ssp"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/_12sdp"
+                android:backgroundTint="#1DB954"
+                android:textColor="@color/white"
+                android:layout_marginBottom="@dimen/_16sdp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

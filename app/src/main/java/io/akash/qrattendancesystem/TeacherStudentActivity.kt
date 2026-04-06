@@ -3,6 +3,7 @@ package io.akash.qrattendancesystem
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -52,6 +53,8 @@ class TeacherStudentActivity : AppCompatActivity() {
         }
 
         binding.loginBtn.setOnClickListener {
+
+            hideKeyboard()
 
             val email = binding.emailEdt.text.toString().trim()
             val password = binding.passwordEdt.text.toString().trim()
@@ -112,5 +115,12 @@ class TeacherStudentActivity : AppCompatActivity() {
                 binding.progressBar.visibility = View.GONE
                 Toast.makeText(this, "Login Failed ❌", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        currentFocus?.let {
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+        }
     }
 }
