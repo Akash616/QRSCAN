@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -40,6 +41,9 @@ class TeacherActivity : AppCompatActivity() {
             view.setPadding(0, systemBars.top, 0, systemBars.bottom)
             insets
         }
+
+        WindowCompat.getInsetsController(window, window.decorView)
+            ?.isAppearanceLightStatusBars = false
 
         binding.btnGenerate.setOnClickListener {
 

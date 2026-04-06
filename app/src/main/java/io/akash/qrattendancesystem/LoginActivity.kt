@@ -56,6 +56,8 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
+        WindowCompat.getInsetsController(window, window.decorView)
+            ?.isAppearanceLightStatusBars = false
 
         // Teacher button click
         binding.btnTeacher.setOnClickListener {
