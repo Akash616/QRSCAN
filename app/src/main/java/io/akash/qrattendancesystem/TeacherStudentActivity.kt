@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -27,7 +28,7 @@ class TeacherStudentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
 
         binding = ActivityTeacherStudentBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -39,8 +40,12 @@ class TeacherStudentActivity : AppCompatActivity() {
             insets
         }
 
-        WindowCompat.getInsetsController(window, window.decorView)
-            ?.isAppearanceLightStatusBars = false
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+            view.setPadding(0, 0, 0, imeInsets.bottom)
+            insets
+        }
+
 
         auth = FirebaseAuth.getInstance()
 

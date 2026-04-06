@@ -6,8 +6,10 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -27,6 +29,8 @@ class TeacherActivity : AppCompatActivity() {
     private val classList = ArrayList<String>()
     private val classIdList = ArrayList<String>()
 
+    private var backPressedTime: Long = 0
+
     private lateinit var fusedLocationClient: com.google.android.gms.location.FusedLocationProviderClient
 
     override fun onStart() {
@@ -38,7 +42,7 @@ class TeacherActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
 
         binding = ActivityTeacherBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -47,6 +51,12 @@ class TeacherActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(0, systemBars.top, 0, systemBars.bottom)
+            insets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+            view.setPadding(0, 0, 0, imeInsets.bottom)
             insets
         }
 
@@ -64,8 +74,11 @@ class TeacherActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            binding.progressbar.visibility = View.VISIBLE
+
             val position = binding.spinnerClass.selectedItemPosition
             if (classIdList.isEmpty()) {
+                binding.progressbar.visibility = View.GONE
                 Toast.makeText(this, "No class found ❌", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -100,12 +113,14 @@ class TeacherActivity : AppCompatActivity() {
                 }
                 """.trimIndent()
 
+                        binding.progressbar.visibility = View.GONE
                         val qrBitmap = generateQR(qrData)
                         binding.qrImage.setImageBitmap(qrBitmap)
 
                         Toast.makeText(this, "QR Generated ✅", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
+                        binding.progressbar.visibility = View.GONE
                         Toast.makeText(this, "Error creating lecture ❌", Toast.LENGTH_SHORT).show()
                     }
             }
@@ -115,6 +130,10 @@ class TeacherActivity : AppCompatActivity() {
             FirebaseAuth.getInstance().signOut()
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
+        }
+
+        onBackPressedDispatcher.addCallback(this) {
+            finishAffinity() // app exit
         }
     }
 
@@ -201,6 +220,15 @@ class TeacherActivity : AppCompatActivity() {
             }
         }
         return bmp
+    }
+
+    override fun onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            finishAffinity()
+        } else {
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 
 }

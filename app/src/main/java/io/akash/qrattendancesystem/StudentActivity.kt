@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,6 +21,8 @@ class StudentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStudentBinding
     private val db = FirebaseFirestore.getInstance()
 
+    private var backPressedTime: Long = 0
+
     override fun onStart() {
         super.onStart()
 
@@ -29,7 +32,7 @@ class StudentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
 
         binding = ActivityStudentBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -38,6 +41,12 @@ class StudentActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(0, systemBars.top, 0, systemBars.bottom)
+            insets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+            view.setPadding(0, 0, 0, imeInsets.bottom)
             insets
         }
 
@@ -54,6 +63,11 @@ class StudentActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+
+        onBackPressedDispatcher.addCallback(this) {
+            finishAffinity() // app exit
+        }
+
     }
 
     private fun startQRScanner() {
@@ -115,5 +129,14 @@ class StudentActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error ❌", Toast.LENGTH_SHORT).show()
                 Log.e("FIREBASE", "Error ❌")
             }
+    }
+
+    override fun onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            finishAffinity()
+        } else {
+            Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show()
+        }
+        backPressedTime = System.currentTimeMillis()
     }
 }

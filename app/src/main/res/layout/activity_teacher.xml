@@ -79,13 +79,34 @@
                 android:layout_height="@dimen/_40sdp"
                 android:layout_marginHorizontal="@dimen/_16sdp"/>
 
-            <ImageView
-                android:id="@+id/qrImage"
-                android:layout_width="@dimen/_250sdp"
-                android:layout_height="@dimen/_250sdp"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:background="#fff"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/qrImage"
+                    android:layout_width="@dimen/_250sdp"
+                    android:layout_height="@dimen/_250sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="24dp"
+                    android:background="#fff"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <ProgressBar
+                    android:id="@+id/progressbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminateTint="@color/black"
+                    app:layout_constraintTop_toTopOf="@id/qrImage"
+                    app:layout_constraintStart_toStartOf="@id/qrImage"
+                    app:layout_constraintEnd_toEndOf="@id/qrImage"
+                    app:layout_constraintBottom_toBottomOf="@id/qrImage"
+                    android:visibility="gone"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:text="Scan this QR Code"
