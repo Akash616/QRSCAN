@@ -4,6 +4,7 @@ import android.R
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -20,6 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import io.akash.qrattendancesystem.databinding.ActivityTeacherBinding
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class TeacherActivity : AppCompatActivity() {
 
@@ -30,6 +37,8 @@ class TeacherActivity : AppCompatActivity() {
     private val classIdList = ArrayList<String>()
 
     private var backPressedTime: Long = 0
+
+    private var currentQR: Bitmap? = null
 
     private lateinit var fusedLocationClient: com.google.android.gms.location.FusedLocationProviderClient
 
@@ -68,6 +77,10 @@ class TeacherActivity : AppCompatActivity() {
         loadClasses()
 
         binding.btnGenerate.setOnClickListener {
+
+            // 🧹 Clear old QR first
+            binding.qrImage.setImageDrawable(null)
+            currentQR = null
 
             if (!isLocationEnabled()) {
                 showLocationDialog()
@@ -117,6 +130,8 @@ class TeacherActivity : AppCompatActivity() {
                         val qrBitmap = generateQR(qrData)
                         binding.qrImage.setImageBitmap(qrBitmap)
 
+                        currentQR = qrBitmap
+
                         Toast.makeText(this, "QR Generated ✅", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
@@ -134,6 +149,20 @@ class TeacherActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this) {
             finishAffinity() // app exit
+        }
+
+        binding.btnShare.setOnClickListener {
+
+            val position = binding.spinnerClass.selectedItemPosition
+
+            if (currentQR != null && classList.isNotEmpty()) {
+
+                val className = classList[position]
+                shareQR(currentQR!!, className)
+
+            } else {
+                Toast.makeText(this, "Generate QR first ❌", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -229,6 +258,40 @@ class TeacherActivity : AppCompatActivity() {
             Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show()
         }
         backPressedTime = System.currentTimeMillis()
+    }
+
+    private fun getImageUri(bitmap: Bitmap): Uri {
+        val file = File(cacheDir, "qr.png")
+        val stream = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        stream.close()
+        return FileProvider.getUriForFile(
+            this,
+            "${packageName}.provider",
+            file
+        )
+    }
+
+    private fun shareQR(bitmap: Bitmap, className: String) {
+        val uri = getImageUri(bitmap)
+
+        val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val time = sdf.format(Date())
+
+        val message = """
+        📚 Class: $className
+        🕒 Time: $time
+        
+        👉 Scan this QR for attendance
+    """.trimIndent()
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "image/png"
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        intent.putExtra(Intent.EXTRA_TEXT, message)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        startActivity(Intent.createChooser(intent, "Share QR via"))
     }
 
 }
