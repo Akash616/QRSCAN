@@ -27,6 +27,8 @@ class TeacherActivity : AppCompatActivity() {
     private val classList = ArrayList<String>()
     private val classIdList = ArrayList<String>()
 
+    private lateinit var fusedLocationClient: com.google.android.gms.location.FusedLocationProviderClient
+
     override fun onStart() {
         super.onStart()
 
@@ -51,22 +53,62 @@ class TeacherActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView)
             ?.isAppearanceLightStatusBars = false
 
+        fusedLocationClient = com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(this)
+
         loadClasses()
 
         binding.btnGenerate.setOnClickListener {
 
-            // 👇 NEW: selected class (abhi use nahi kar rahe, next step me use hoga)
+            if (!isLocationEnabled()) {
+                showLocationDialog()
+                return@setOnClickListener
+            }
+
             val position = binding.spinnerClass.selectedItemPosition
-            val selectedClassId = if (classIdList.isNotEmpty()) classIdList[position] else ""
+            if (classIdList.isEmpty()) {
+                Toast.makeText(this, "No class found ❌", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-            val user = FirebaseAuth.getInstance().currentUser
+            val selectedClassId = classIdList[position]
 
-            val sessionId = "session_${System.currentTimeMillis()}_${user?.uid}"
+            val teacherId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
 
-            val qrBitmap = generateQR(sessionId)
+            // Get location first
+            getLocation { lat, lng ->
 
-            binding.qrImage.setImageBitmap(qrBitmap)
+                val lectureId = "lec_${System.currentTimeMillis()}"
 
+                // Save lecture in Firebase
+                val lecture = hashMapOf(
+                    "classId" to selectedClassId,
+                    "teacherId" to teacherId,
+                    "latitude" to lat,
+                    "longitude" to lng,
+                    "timestamp" to System.currentTimeMillis()
+                )
+
+                db.collection("lectures")
+                    .document(lectureId)
+                    .set(lecture)
+                    .addOnSuccessListener {
+
+                        //QR me sirf lectureId bhejna
+                        val qrData = """
+                {
+                    "lectureId": "$lectureId"
+                }
+                """.trimIndent()
+
+                        val qrBitmap = generateQR(qrData)
+                        binding.qrImage.setImageBitmap(qrBitmap)
+
+                        Toast.makeText(this, "QR Generated ✅", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error creating lecture ❌", Toast.LENGTH_SHORT).show()
+                    }
+            }
         }
 
         binding.btnLogout.setOnClickListener {
@@ -74,6 +116,47 @@ class TeacherActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+    }
+
+    private fun getLocation(onLocationReady: (Double, Double) -> Unit) {
+
+        if (androidx.core.content.ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+
+            androidx.core.app.ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                100
+            )
+            return
+        }
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                onLocationReady(location.latitude, location.longitude)
+            } else {
+                Toast.makeText(this, "Location not found ❌", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager = getSystemService(LOCATION_SERVICE) as android.location.LocationManager
+        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+    }
+
+    private fun showLocationDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Location Required 📍")
+            .setMessage("Please enable location to generate QR")
+            .setPositiveButton("Turn ON") { _, _ ->
+                startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun loadClasses() {
